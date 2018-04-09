@@ -1,0 +1,8 @@
+[ver:1,total:7620]
+README.md:4650,1523253600:2820,1523257200:1830,m
+Makefile:2110,1523250000:1810,1523253600:300,m
+Dockerfile:410,1523250000:360,1523257200:50,m
+manifests/unifi-exporter-deployment.yaml:290,1523250000:230,1523257200:60,m
+config.example.yml:120,1523250000:120,m
+manifests/unifi-exporter-servicemonitor-router.yaml:30,1523257200:30,m
+manifests/unifi-exporter-service.yaml:10,1523257200:10,m
