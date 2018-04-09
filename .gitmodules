@@ -1,0 +1,3 @@
+[submodule "unifi_exporter"]
+	path = unifi_exporter
+	url = https://github.com/mdlayher/unifi_exporter

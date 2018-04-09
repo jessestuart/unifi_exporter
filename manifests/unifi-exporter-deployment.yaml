@@ -1,0 +1,33 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: unifi-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unifi-exporter
+  template:
+    metadata:
+      labels:
+        app: unifi-exporter
+    spec:
+      containers:
+      - image: jessestuart/unifi_exporter:v0.4.0
+        name: unifi-exporter
+        command:
+        - /bin/unifi_exporter
+        args:
+        - "-config.file=/unifi_exporter/config.yml"
+        ports:
+        - containerPort: 9130
+          name: metrics
+        volumeMounts:
+          - name: config
+            mountPath: /unifi_exporter/config.yml
+            subPath: config.yml
+            readOnly: true
+      volumes:
+        - name: config
+          secret:
+            secretName: unifi-exporter-credentials

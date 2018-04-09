@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: unifi-exporter
+  name: unifi-exporter
+spec:
+  ports:
+  - name: http-metrics
+    port: 9130
+    protocol: TCP
+    targetPort: metrics
+  selector:
+    app: unifi-exporter
+
