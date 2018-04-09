@@ -1,6 +1,8 @@
 Multi-arch `unifi_exporter` for Prometheus Operator
 =======================================================
 
+[![Docker Repository on Quay][quay-badge]][quay-link]
+
 Have you ever wanted to aggregate your Unifi networking data right alongside
 all the myriad other data points you've meticulously configured your system to
 collect?
@@ -65,3 +67,5 @@ If you just want a multi-arch Docker image, you can pull from
 [prom-op]: https://github.com/coreos/prometheus-operator
 [unifi-exporter-mdlayher]: https://github.com/mdlayher/unifi_exporter
 [v2-image-manifest]: https://docs.docker.com/registry/spec/manifest-v2-2/
+[quay-badge]: https://quay.io/repository/jessestuart/unifi_exporter/status
+[quay-link]: https://quay.io/repository/jessestuart/unifi_exporter
