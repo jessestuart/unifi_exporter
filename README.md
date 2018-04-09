@@ -2,6 +2,7 @@ Multi-arch `unifi_exporter` for Prometheus Operator
 =======================================================
 
 [![Docker Repository on Quay][quay-badge]][quay-link]
+![Docker Pulls][docker-hub-badge]
 
 Have you ever wanted to aggregate your Unifi networking data right alongside
 all the myriad other data points you've meticulously configured your system to
@@ -13,8 +14,10 @@ It was those pretty network graphs.
 
 #### What does this do?
 
-This builds on the [excellent ubiquiti => prometheus integration][unifi-exporter-mdlayher]
-developed by @mdlayher, which sadly is no longer actively maintained.
+This builds on the [excellent Unifi Exporter package][unifi-exporter-mdlayher]
+developed by @mdlayher, which unfortunately is no longer actively maintained,
+and provides an up-to-date, multi-arch image with the additional configuration
+manifests required for easy Kubernetes + Prometheus Operator integration.
 
 In addition to the self-evident benefits of the tool itself, this integration
 offers:
@@ -24,7 +27,7 @@ offers:
 
 - Native multi-arch (i.e., as defined in the [V2 image manifest, schema
   2][v2-image-manifest]) support for `amd64`, `armv7`/`armhf`, and `arm64`/`aarch64`
-  architectures. Use it on your AWS VM's, your RPi's, your Odroid C2's,
+  architectures. Use it on your GCP VM's, your Raspberry Pis, your Odroid C2's,
   Rock64's... you get the idea.
 
 - Turnkey integration with an existing Prometheus Operator deployment.
@@ -46,26 +49,32 @@ offers:
 
 ### Usage
 
-If you just want a multi-arch Docker image, you can pull from
-`jessestuart/unifi_exporter:v0.1.4.0` and go to town.
+#### 'Vanilla' Docker
+If you just want a multi-arch Docker image for the exporter, you can pull from
+`jessestuart/unifi_exporter:v0.4.0` and go to town — just bind mount your
+config file into your container and follow the instructions in the exporter
+[README][unifi-exporter-readme].
 
-1. Now's a good time to switch to whatever namespace the new resources will
-   live in; I kept miine in a `monitoring` namespace, along with the rest of
+#### Kubernetes Deployment
+
+1. Now's a good time to switch to whatever namespace the resources to be created
+   will live in. I kept mine in a `monitoring` namespace, along with the rest of
    my exporters.
 1. Copy the `config.example.yml`, and fill it in with your Unifi controller's
-   credentials. This should be as simple as updating the host, username, and
-   password; you may also need to change the port if your controller is behind
-   a reverse proxy.
-1. Run `make generate-secret` to create a Kubernetes "generic secret" storing
+   credentials. This just require updating the host, username, and password; you
+   may also need to change the port if your controller is behind a reverse
+   proxy.
+1. Run `make generate-secret` to create a Kubernetes secret storing
    the data in this file.
 1. Run `make deploy` to deploy the manifests defined in the `manifests` folder
-   to your cluster (you probably don't have any reason to edit these).
+   to your cluster.
 
 [cloud-key-amazon]: https://www.amazon.com/Ubiquiti-Unifi-Cloud-Key-Control/dp/B017T2QB22/
+[docker-hub-badge]: https://img.shields.io/docker/pulls/jessestuart/unifi_exporter.svg
 [prom-op-carlosedp]: https://itnext.io/creating-a-full-monitoring-solution-for-arm-kubernetes-cluster-53b3671186cb
 [prom-op-docs]: https://coreos.com/operators/prometheus/docs/latest/
 [prom-op]: https://github.com/coreos/prometheus-operator
-[unifi-exporter-mdlayher]: https://github.com/mdlayher/unifi_exporter
-[v2-image-manifest]: https://docs.docker.com/registry/spec/manifest-v2-2/
 [quay-badge]: https://quay.io/repository/jessestuart/unifi_exporter/status
 [quay-link]: https://quay.io/repository/jessestuart/unifi_exporter
+[unifi-exporter-mdlayher]: https://github.com/mdlayher/unifi_exporter
+[v2-image-manifest]: https://docs.docker.com/registry/spec/manifest-v2-2/
