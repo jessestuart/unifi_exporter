@@ -1,63 +1,58 @@
-unifi_exporter [![GoDoc](http://godoc.org/github.com/mdlayher/unifi_exporter?status.svg)](http://godoc.org/github.com/mdlayher/unifi_exporter) [![Build Status](https://travis-ci.org/mdlayher/unifi_exporter.svg?branch=master)](https://travis-ci.org/mdlayher/unifi_exporter) [![Coverage Status](https://coveralls.io/repos/mdlayher/unifi_exporter/badge.svg?branch=master)](https://coveralls.io/r/mdlayher/unifi_exporter?branch=master)
-==============
+### Multi-arch `unifi_exporter` for Prometheus Operator
 
-Command `unifi_exporter` provides a Prometheus exporter for a Ubiquiti UniFi
-Controller API and UniFi devices.
+Ever wanted to aggregate your Unifi networking data right alongside all of the
+other myriad data points you've meticulously configured your system to collect?
+Sure, you've already got more hand-tweaked Grafana graphs than could possibly
+fit on any screen, but still something was missing — all those pretty network
+graphs.
 
-Package `unifiexporter` provides the Exporter type used in the `unifi_exporter`
-Prometheus exporter.
+#### What does this do that _x_ library doesn't?
 
-MIT Licensed.
+This builds on the excellent package by @mdlayher, which sadly is no longer
+actively maintained.
 
-Seeking additional maintainers
-------------------------------
+In addition to the self-evident benefits of the tool itself, this integration
+offers:
 
-Due to the wide variety of UniFi devices available, and because the UniFi
-APIs are unstable, Matt Layher is unable to dedicate the time and energy
-needed to maintain this exporter on his own.
+- A significantly trimmed down Docker image -- just 7MB compressed, compared to
+  150+MB.
 
-At this time, there are no official releases or Docker images available.
-Building the exporter from master is the expected method to deploy it.
+- Native multi-arch (i.e., as defined in the [V2 image manifest, schema
+  2][v2-image-manifest]) support for `amd64`, `armv7`/`armhf`, and `arm64`/`aarch64`
+  architectures. Use it on your AWS VM's, your RPi's, your Odroid C2's,
+  Rock64's... you get the idea.
 
-If you are interested in maintaining this exporter and have demonstrated
-a history of submitting solid improvements to the project, I am happy to
-grant push access to remove myself as a roadblock for progress.
+- Turnkey integration with an existing Prometheus Operator deployment.
 
+#### Sounds cool. What do I need?
 
-Usage
------
+- Ubiquiti gear, obviously; as well as a persistent connection to an instance of
+  your Unifi controller. This means that no, spinning it up as-needed on your
+  local machine isn't going to cut it here. You can either spring for Ubiquiti's
+  [Cloud Key][cloud-key-amazon], or you can easily host it on your choice of
+  hosting provider — AWS, GCP, Digital Ocean, Linode, Vultr, Scaleway, etc. all
+  have VPS' that will meet the minimum requirements for <= \$5 USD / month.
 
-```
-$ ./unifi_exporter -h
-Usage of ./unifi_exporter:
-  -config.file string
-       Relative path to config file yaml
-```
+- A Kubernetes cluster, with CoreOS' [Prometheus
+  Operator][prom-op] deployed. If not, check out the
+  [official-docs][prom-op-docs] to get started; [Carlos
+  Eduardo][prom-op-carlosedp] also has a great writeup on his experience porting
+  many of the Operator images to ARM architecture(s) that's well worth the
+  read.
 
-To run the exporter, edit the included config.yml.example, rename it to config.yml, then run the exporter like so:
+### Usage
 
-```
-$ ./unifi_exporter -config.file config.yml
-2017/11/15 17:06:32 [INFO] successfully authenticated to UniFi controller
-2017/11/15 17:06:32 Starting UniFi exporter on ":9130" for site(s): Default
-```
+If you just want a multi-arch Docker image, you can pull from
+`jessestuart/unifi_exporter:v0.1.4.0` and go to town.
 
-The minimum you'll need to modify is the unifi address, username and password. The port defaults to 8443 as specified in the config file,
-and the defaults in 'listen' are sufficient for most users.
-
-Sample
-------
-
-Here is a screenshot of a sample dashboard created using [`grafana`](https://github.com/grafana/grafana)
-with metrics from exported from `unifi_exporter`.
-
-![sample](https://cloud.githubusercontent.com/assets/1926905/13296555/163b39f2-dafc-11e5-84ef-8b8f03872c84.png)
-
-
-Thanks
-------
-
-Special thanks to [Vaibhav Bhembre](https://github.com/neurodrone) for his work
-on [`ceph_exporter`](https://github.com/digitalocean/ceph_exporter).
-`ceph_exporter`  was used frequently as a reference Prometheus exporter while
-implementing `unifi_exporter`.
+1. Now's a good time to switch to whatever namespace the new resources will
+   live in; I kept miine in a `monitoring` namespace, along with the rest of
+   my exporters.
+1. Copy the `config.example.yml`, and fill it in with your Unifi controller's
+   credentials. This should be as simple as updating the host, username, and
+   password; you may also need to change the port if your controller is behind
+   a reverse proxy.
+1. Run `make generate-secret` to create a Kubernetes "generic secret" storing
+   the data in this file.
+1. Run `make deploy` to deploy the manifests defined in the `manifests` folder
+   to your cluster (you probably don't have any reason to edit these).

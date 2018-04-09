@@ -1,6 +1,6 @@
-FROM alpine:latest
+FROM golang:1.12-alpine3.9 as builder
 
-EXPOSE 9130
+LABEL maintainer="Jesse Stuart <hi@jessestuart.com>"
 
 RUN apk add --update --virtual build-deps go git musl-dev && \
     go get github.com/mdlayher/unifi_exporter/cmd/unifi_exporter && \
@@ -8,5 +8,31 @@ RUN apk add --update --virtual build-deps go git musl-dev && \
     apk del build-deps && \
     rm -rf /var/cache/apk/* ~/go/
 
+EXPOSE 9130
+
 USER nobody
 ENTRYPOINT ["/bin/unifi_exporter"]
+
+# =======
+# FROM golang:1.10-alpine3.7 as builder
+
+# ENV GOPATH /go
+# ENV PATH $PATH:$GOPATH/bin
+# ENV CGO_ENABLED 0
+
+# RUN  \
+#   apk add --no-cache ca-certificates curl && \
+#   apk add --no-cache --virtual .build-deps git && \
+#   go get github.com/mdlayher/unifi_exporter/cmd/unifi_exporter
+
+# # =============================================================================
+
+# FROM alpine:3.7
+# LABEL maintainer="Jesse Stuart <hi@jessestuart.com>"
+
+# RUN apk add --update --no-cache ca-certificates
+
+# COPY --from=builder /go/bin/unifi_exporter /bin/unifi_exporter
+
+# EXPOSE 9130
+# >>>>>>> Init commit 🎉

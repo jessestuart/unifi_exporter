@@ -1,2 +1,4 @@
-/unifi_exporter
+/.gtm/
 /config.yml
+/unifi_exporter
+config.yml
