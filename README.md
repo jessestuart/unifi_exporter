@@ -1,8 +1,8 @@
-Multi-arch `unifi_exporter` for Prometheus Operator
-=======================================================
+# Multi-arch `unifi_exporter` for Prometheus Operator
 
 [![Docker Repository on Quay][quay-badge]][quay-link]
 ![Docker Pulls][docker-hub-badge]
+[![][microbadger]][microbadger 2]
 
 Have you ever wanted to aggregate your Unifi networking data right alongside
 all the myriad other data points you've meticulously configured your system to
@@ -39,7 +39,7 @@ offers:
   isn't going to cut it here. You can either spring for Ubiquiti's [Cloud
   Key][cloud-key-amazon], or you can easily host it on your choice of hosting
   provider — AWS, GCP, Digital Ocean, Linode, Vultr, Scaleway, etc. all have
-  VPS' that will meet the minimum requirements for <= $5 USD / month.
+  VPS' that will meet the minimum requirements for <= \$5 USD / month.
 
 - A Kubernetes cluster, with CoreOS' [Prometheus Operator][prom-op] deployed.
   If not, check out the [official-docs][prom-op-docs] to get started; [Carlos
@@ -50,6 +50,7 @@ offers:
 ### Usage
 
 #### 'Vanilla' Docker
+
 If you just want a multi-arch Docker image for the exporter, you can pull from
 `jessestuart/unifi_exporter:v0.4.0` and go to town — just bind mount your
 config file into your container and follow the instructions in the exporter
@@ -71,6 +72,8 @@ config file into your container and follow the instructions in the exporter
 
 [cloud-key-amazon]: https://www.amazon.com/Ubiquiti-Unifi-Cloud-Key-Control/dp/B017T2QB22/
 [docker-hub-badge]: https://img.shields.io/docker/pulls/jessestuart/unifi_exporter.svg
+[microbadger 2]: https://microbadger.com/images/jessestuart/unifi_exporter "Get your own image badge on microbadger.com"
+[microbadger]: https://images.microbadger.com/badges/image/jessestuart/unifi_exporter.svg
 [prom-op-carlosedp]: https://itnext.io/creating-a-full-monitoring-solution-for-arm-kubernetes-cluster-53b3671186cb
 [prom-op-docs]: https://coreos.com/operators/prometheus/docs/latest/
 [prom-op]: https://github.com/coreos/prometheus-operator
