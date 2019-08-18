@@ -1,0 +1,119 @@
+version: 2.0
+
+build_jobs: &build_jobs
+  jobs:
+    - build-amd64
+    - build-arm64
+    - build-armhf
+    - push-manifest:
+        requires:
+          - build-amd64
+          - build-arm64
+          - build-armhf
+
+workflows:
+  version: 2
+  commit:
+    <<: *build_jobs
+  nightly:
+    <<: *build_jobs
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+
+shared: &shared
+  docker:
+    - image: docker:stable-git
+  steps:
+    - checkout
+
+    - setup_remote_docker:
+        docker_layer_caching: true
+
+    - run:
+        name: Install build dependencies.
+        command: apk add --no-cache bash curl git jq make perl
+
+    - run:
+        name: Add dynamic shared vars to env.
+        command: |
+          .circleci/load_env.sh
+
+    - run:
+        name: Build and push Docker image.
+        command: |
+          source $BASH_ENV
+          .circleci/build-image.sh
+
+jobs:
+  build-amd64:
+    <<: *shared
+    environment:
+      GOARCH: amd64
+      QEMU_ARCH: amd64
+      TAG: amd64
+      TARGET: amd64
+  build-arm64:
+    <<: *shared
+    environment:
+      GOARCH: arm64
+      QEMU_ARCH: aarch64
+      TAG: arm64
+      TARGET: arm64v8
+  build-armhf:
+    <<: *shared
+    environment:
+      GOARCH: arm
+      QEMU_ARCH: arm
+      TAG: arm
+      TARGET: arm32v6
+  push-manifest:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - run:
+          name: Install build dependencies.
+          command: |
+            apk add --no-cache curl jq
+
+      - run:
+          name: Load env vars.
+          command: sh .circleci/load_env.sh
+
+      - run:
+          name: Install manifest-tool.
+          command: |
+            echo "Downloading manifest-tool."
+            wget https://github.com/estesp/manifest-tool/releases/download/v1.0.0-rc3/manifest-tool-linux-amd64
+            mv manifest-tool-linux-amd64 /usr/bin/manifest-tool
+            chmod +x /usr/bin/manifest-tool
+            manifest-tool --version
+
+      - run:
+          name: Push Docker manifest.
+          command: |
+            source $BASH_ENV
+            echo $DOCKERHUB_PASS | docker login -u $DOCKERHUB_USER --password-stdin;
+            manifest-tool push from-args \
+              --platforms linux/amd64,linux/arm,linux/arm64 \
+              --template "$REGISTRY/$IMAGE:$VERSION-ARCH" \
+              --target "$REGISTRY/$IMAGE:$VERSION"
+            if [ "${CIRCLE_BRANCH}" == 'master' ]; then
+              manifest-tool push from-args \
+                --platforms linux/amd64,linux/arm,linux/arm64 \
+                --template "$REGISTRY/$IMAGE:$VERSION-ARCH" \
+                --target "$REGISTRY/$IMAGE:latest"
+            fi
+
+      - run:
+          name: Verify manifest was persisted remotely.
+          command: |
+            source $BASH_ENV
+            manifest-tool inspect "$REGISTRY/$IMAGE:$VERSION"

@@ -2,7 +2,7 @@ listen:
   address: :9130
   metricspath: /metrics
 unifi:
-  address: https://unifi.example.com
+  address: https://my-controller.example.io
   username: your_username
   password: fakey_password
   site: Default

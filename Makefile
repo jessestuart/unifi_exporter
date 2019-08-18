@@ -18,11 +18,12 @@ querying some metrics — they're all prefixed with the `unifi_` keyword.
 ===============================================================
 endef
 
+NAMESPACE ?= monitoring
+
 .PHONY: build
 build:
-	pushd ./unifi_exporter/
-	go build ./cmd/unifi_exporter
-	popd
+	cd unifi_exporter
+	go build ./cmd/unifi_exporter -o unifi_exporter
 
 .PHONY: docker
 docker:
@@ -33,14 +34,17 @@ clean:
 	go clean
 	rm -f unifi_exporter
 
+# You can replace namespace with whatever you want; but make sure
+# it matches the namespaces you'll be deploying to.
 generate-secret:
-	# You can replace namespace with whatever you want; but make sure
-	# it matches the namespaces you'll be deploying to.
 	kubectl create secret generic unifi-exporter-credentials \
-		--namespace monitoring \
+		--namespace $(NAMESPACE) \
 		--from-file config.yml
 
 export DEPLOY_SUCCEDED_MESSAGE
 deploy:
 	kubectl apply -f manifests/
 	@echo "$$DEPLOY_SUCCEDED_MESSAGE"
+
+destroy:
+	kubectl delete -f manifests/

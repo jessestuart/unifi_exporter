@@ -1,2 +1,3 @@
 /.gtm/
 config.yml
+!.circleci/config.yml
