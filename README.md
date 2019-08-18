@@ -1,5 +1,6 @@
 # Multi-arch `unifi_exporter` for Prometheus
 
+[![CircleCI][circleci]][circleci 2]
 ![Docker Pulls][docker-hub-badge]
 [![][microbadger]][microbadger 2]
 
@@ -69,6 +70,8 @@ file into your container and follow the instructions in the exporter
 1. Run `make deploy` to deploy to your cluster, and `make destroy` to remove
    only those resources that were created.
 
+[circleci]: https://circleci.com/gh/jessestuart/unifi_exporter.svg?style=shield
+[circleci 2]: https://circleci.com/gh/jessestuart/unifi_exporter
 [cloud-key-amazon]:
   https://www.amazon.com/Ubiquiti-Unifi-Cloud-Key-Control/dp/B017T2QB22/
 [docker-hub-badge]:
@@ -80,8 +83,8 @@ file into your container and follow the instructions in the exporter
   https://images.microbadger.com/badges/image/jessestuart/unifi_exporter.svg
 [prom-op-carlosedp]:
   https://itnext.io/creating-a-full-monitoring-solution-for-arm-kubernetes-cluster-53b3671186cb
-[prom-op-docs]: https://coreos.com/operators/prometheus/docs/latest/
 [prom-op]: https://github.com/coreos/prometheus-operator
+[prom-op-docs]: https://coreos.com/operators/prometheus/docs/latest/
 [quay-badge]: https://quay.io/repository/jessestuart/unifi_exporter/status
 [quay-link]: https://quay.io/repository/jessestuart/unifi_exporter
 [unifi-exporter-mdlayher]: https://github.com/mdlayher/unifi_exporter
