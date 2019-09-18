@@ -36,7 +36,7 @@ shared: &shared
 
     - run:
         name: Install build dependencies.
-        command: apk add --no-cache bash curl git jq make perl
+        command: apk add --upgrade --no-cache bash curl git jq make perl
 
     - run:
         name: Add dynamic shared vars to env.
@@ -81,7 +81,7 @@ jobs:
       - run:
           name: Install build dependencies.
           command: |
-            apk add --no-cache curl jq
+            apk add --upgrade --no-cache curl jq
 
       - run:
           name: Load env vars.
