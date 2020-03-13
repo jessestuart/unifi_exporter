@@ -1,0 +1,10 @@
+version: "3.6"
+services:
+  unifi_exporter:
+    image: jessestuart/unifi_exporter:v0.4.0
+    restart: unless-stopped
+    ports:
+      - '9130:9130'
+    volumes:
+      - "./unifi-config.yml:/unifi_exporter/config.yml:ro"
+    command: "-config.file=/unifi_exporter/config.yml"
